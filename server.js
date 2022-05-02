@@ -18,8 +18,6 @@ const server = http.createServer((req, res) => {
     res.write(`<h1>ERROR 500 INTERAL SERVER ERROR ${e}</h1>`);
   }
   res.end();
-
-  
 });
 
 server.listen(port);
