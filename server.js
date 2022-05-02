@@ -30,6 +30,11 @@ const server = http.createServer((req, res) => {
           data = fs.readFileSync(path.resolve(__dirname+'/public/css/style.css'));
           res.write(data);
           break;
+        case "/public/js/script.js":
+          res.writeHead(200,{'Content-Type': 'text/javascript'})
+          data = fs.readFileSync(path.resolve(__dirname+'/public/js/script.js'));
+          res.write(data);
+          break;
         default:
           console.log(req.url)
           returnPage(res, 404,'/public/pages/erreur404.html' );
