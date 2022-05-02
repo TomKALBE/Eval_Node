@@ -8,8 +8,10 @@ const server = http.createServer((req, res) => {
         res.write('<h1>HELLO WORLD TOM</h1>');
         break;
       default:
-        res.write('<h1>ERROR 404</h1>')
+        res.write('<h1>ERROR 404</h1>');
     }
+  }else{
+    res.write('<h1>ERROR 405 METHOD NOT ALLOWED</h1>');
   }
   res.end();
 });
