@@ -1,21 +1,32 @@
 const http = require('http');
+const fs = require("fs");
+
 const port = 5000;
 
+const returnPage = (res, code, file) => {
+  res.writeHead(code, {
+    'Content-Type': 'text/html'
+  });
+  const data = fs.readFileSync(__dirname+file, {
+    'Content-Type': 'text/html'
+  });
+  res.write(data)
+}
 const server = http.createServer((req, res) => {
   try{
     if(req.method === 'GET'){
       switch (req.url){
         case "/":
-          res.write('<h1>HELLO WORLD TOM</h1>');
+          returnPage(res, 200,'/public/pages/index.html' )
           break;
         default:
-          res.write('<h1>ERROR 404 PAGE NOT FOUND</h1>');
+          returnPage(res, 404,'/public/pages/erreur404.html' )
       }
     }else{
-      res.write('<h1>ERROR 405 METHOD NOT ALLOWED</h1>');
+      returnPage(res, 405,'/public/pages/erreur405.html' )
     }
   }catch(e){
-    res.write(`<h1>ERROR 500 INTERAL SERVER ERROR ${e}</h1>`);
+    returnPage(res, 500,'/public/pages/erreur500.html' )
   }
   res.end();
 });
