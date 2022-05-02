@@ -17,16 +17,23 @@ const server = http.createServer((req, res) => {
     if(req.method === 'GET'){
       switch (req.url){
         case "/":
-          returnPage(res, 200,'/public/pages/index.html' )
+          returnPage(res, 200,'/public/pages/index.html' );       
+          break;
+        case "/public/images/image":
+          fs.readFile(__dirname+'/public/images/image.jpg', function(err, data) {
+            res.writeHead(200, {'Content-Type': 'image/jpeg'});
+            res.write(data);
+          });
           break;
         default:
-          returnPage(res, 404,'/public/pages/erreur404.html' )
+          console.log(req.url)
+          returnPage(res, 404,'/public/pages/erreur404.html' );
       }
     }else{
-      returnPage(res, 405,'/public/pages/erreur405.html' )
+      returnPage(res, 405,'/public/pages/erreur405.html' );
     }
   }catch(e){
-    returnPage(res, 500,'/public/pages/erreur500.html' )
+    returnPage(res, 500,'/public/pages/erreur500.html' );
   }
   res.end();
 });
