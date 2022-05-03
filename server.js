@@ -1,9 +1,16 @@
 const http = require('http');
 const fs = require("fs");
 const path = require('path');
-const { match } = require('assert');
+
 const port = 5000;
 const regex_ = /\public\/[A-Za-z0-9]+\/[A-Za-z0-9]+[.][A-Za-z0-9]+/;
+
+const MEMORY_DB = new Map(); // est global
+let id = 0; // doit être global
+MEMORY_DB.set(id++, {nom: "Alice"}) // voici comment set une nouvelle entrée.
+MEMORY_DB.set(id++, {nom: "Bob"})
+MEMORY_DB.set(id++, {nom: "Charlie"})
+
 const returnPage = (res, code, file) => {
   res.writeHead(code, {
     'Content-Type': 'text/html'
@@ -35,6 +42,10 @@ const server = http.createServer((req, res) => {
     if(req.method === 'GET'){
       if (req.url === "/"){
           returnPage(res, 200,'/public/pages/index.html' );       
+      }
+      else if(req.url === '/api/names'){
+        res.writeHead(200, {'Content-Type' : 'application/json'})
+        res.write(JSON.stringify(Array.from(MEMORY_DB)))
       }
       else if(regex_.test(req.url)){
         res.writeHead(200,CONTENT_TYPES[req.url.split('.').pop()])
