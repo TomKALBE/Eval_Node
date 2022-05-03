@@ -49,8 +49,8 @@ const server = http.createServer((req, res) => {
       }
       else if(regex_api.test(req.url)){
         res.writeHead(200, {'Content-Type' : 'application/json'})
-        const obj = MEMORY_DB.get(Number(req.url.split('/').pop()));
-        res.write(JSON.stringify(obj))
+        let obj = JSON.stringify(MEMORY_DB.get(Number(req.url.split('/').pop()))) ?? "{}";
+        res.write(obj)
       }
       else if(regex_.test(req.url)){
         res.writeHead(200,CONTENT_TYPES[req.url.split('.').pop()])
@@ -59,7 +59,21 @@ const server = http.createServer((req, res) => {
       }else{
         returnPage(res, 404,'/public/pages/erreur404.html' );
       }
-    }else{
+    }
+    else if(req.method === "POST"){
+      let data = '';
+      req.on('data', chunk => {
+        data += chunk;
+      });
+      req.on('end', () => {
+        data = JSON.parse(data); // ici vous récupérez le JSON sous forme d'un objet Javascript 
+        if(req.url === "/api/names"){
+          MEMORY_DB.set(id++, data);
+        }
+        res.end(); // ici termine votre route
+      });
+    }
+    else{
       returnPage(res, 405,'/public/pages/erreur405.html' );
     }
   }catch(e){
