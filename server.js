@@ -4,7 +4,7 @@ const path = require('path');
 
 const port = 5000;
 const regex_ = /\public\/[A-Za-z0-9]+\/[A-Za-z0-9]+[.][A-Za-z0-9]+/;
-
+const regex_api =/\/api\/names\/[0-9]+/; 
 const MEMORY_DB = new Map(); // est global
 let id = 0; // doit être global
 MEMORY_DB.set(id++, {nom: "Alice"}) // voici comment set une nouvelle entrée.
@@ -46,6 +46,11 @@ const server = http.createServer((req, res) => {
       else if(req.url === '/api/names'){
         res.writeHead(200, {'Content-Type' : 'application/json'})
         res.write(JSON.stringify(Array.from(MEMORY_DB)))
+      }
+      else if(regex_api.test(req.url)){
+        res.writeHead(200, {'Content-Type' : 'application/json'})
+        const obj = MEMORY_DB.get(Number(req.url.split('/').pop()));
+        res.write(JSON.stringify(obj))
       }
       else if(regex_.test(req.url)){
         res.writeHead(200,CONTENT_TYPES[req.url.split('.').pop()])
